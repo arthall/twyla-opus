@@ -1,4 +1,4 @@
-(ns spectacles.post-map
+(ns spectacles.social-light
   (:require [quil.core :as q]
             [quil.middleware :as m])
   (:import [wordcram WordCram]))
