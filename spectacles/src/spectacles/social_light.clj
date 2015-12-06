@@ -3,12 +3,8 @@
             [quil.middleware :as m])
   (:import [wordcram WordCram]))
 
-(defn setup []
-  (q/color-mode :hsb)
-  (q/background 0)
-  (q/frame-rate 2)
-
-  (let [wc (WordCram. (quil.applet/current-applet))]
+(defn initialize-wordcram [applet]
+  (let [wc (WordCram. applet)]
     (-> wc
         ;;(.fromWebPage "https://twitter.com/WinCityMain")
         ;;(.fromTextString (into-array String ["Life In Lights Winchester"]))
@@ -16,11 +12,24 @@
         (.withColors (int-array [(q/color 220) (q/color 140) (q/color (q/random 255) 240 200)]))
         (.sizedByWeight 5 80)
         (.withFont"Copse")
-        (.angledBetween (float -1.6) (float 1.6)))
-    {:wordcram wc})
+        (.angledBetween (float -1.6) (float 1.6))))
   )
 
-(defn update-state [state] state)
+(defn setup []
+  (q/color-mode :hsb)
+  (q/background 0)
+  (q/frame-rate 4)
+
+  {:wordcram (initialize-wordcram (quil.applet/current-applet))}
+)
+
+(defn update-state [state] 
+  (if (= 0 (mod (q/frame-count) 120))
+    (do
+      (q/background 0)
+      {:wordcram (initialize-wordcram (quil.applet/current-applet))})
+    state)
+  )
 
 (defn draw-state [state]
   (if (.hasMore (:wordcram state))
@@ -39,5 +48,3 @@
   :middleware [m/fun-mode]
   :features [:keep-on-top :present :no-start]
   :bgcolor 0)
-
-
