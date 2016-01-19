@@ -9,65 +9,53 @@
 (def min_diameter 15)
 (def max_speed 10)
 
-(defn random-int [start stop]
-  (let [x (rand-int (- stop start))]
-    (+ x start)))
-
 (defn new_dot []
-  (let [xspeed (* (rand-nth '(1 -1)) (rand-int max_speed))
+  (let [xspeed (* (rand-nth '(1 -1)) (q/random max_speed))
         yspeed (if (= xspeed 0)
-                 (* (rand-nth '(1 -1)) (random-int 1 max_speed))
-                 (* (rand-nth '(1 -1)) (rand-int max_speed)))]
+                 (* (rand-nth '(1 -1)) (q/random 1 max_speed))
+                 (* (rand-nth '(1 -1)) (q/random max_speed)))]
     {:x 0
      :y 0
      :xspeed xspeed
      :yspeed yspeed
-     :diameter (random-int min_diameter max_diameter)
-     :color [(rand-int 255) (rand-int 255) (rand-int 255) (random-int 10 200)]}))
+     :diameter (q/random min_diameter max_diameter)
+     :color [(q/random 256) (q/random 256) (q/random 256) (q/random 10 200)]}))
 
 (defn setup []
   (q/background 0)
   (q/smooth)
   (q/frame-rate 60)
   {:ldots (list (new_dot))
-   :rdots (list (new_dot))})
+   :rdots (list (new_dot))
+   :logo (q/load-image "resources/images/lifeinlights-logo.png")})
+
+(defn draw-dots [x y direction dots func]
+  (q/push-matrix)
+  (q/translate x y)
+  (q/rotate (* direction (q/radians (mod (* (q/frame-count) 2) 360))))
+
+  (let [items (count dots)]
+    (dotimes [n items]
+      (let [dot (nth dots n)]
+        (apply q/fill (:color dot))
+        (func (:x dot) (:y dot) (:diameter dot) (:diameter dot)))))
+  (q/pop-matrix))
 
 (defn draw [state]
-  ;; (q/background 0)
   (q/no-stroke)
   (q/fill 0 0 0 25)
   (q/rect 0 0 (q/width) (q/height))
-  (q/push-matrix)
-  (q/translate 300 300)
-  ;; (q/translate (/ (q/width) 2) (/ (q/height) 2))
-  (q/rotate (q/radians (mod (* (q/frame-count) 2) 360)))
-  (let [dots (:ldots state)
-        items (count (:ldots state))]
-    (dotimes [n items]
-      (let [dot (nth dots n)]
-        (apply q/fill (:color dot))
-        ;;(q/ellipse (:x dot) (:y dot) (:diameter dot) (:diameter dot)))))
-        (q/rect (:x dot) (:y dot) (:diameter dot) (:diameter dot)))))
-  (q/pop-matrix)
-  (q/push-matrix)
-  ;; (q/translate 300 300)
-  (q/translate (/ (q/width) 2) (/ (q/height) 2))
-  (q/rotate (- (q/radians (mod (* (q/frame-count) 2) 360))))
-  (let [dots (:rdots state)
-        items (count (:rdots state))]
-    (dotimes [n items]
-      (let [dot (nth dots n)]
-        (apply q/fill (:color dot))
-        (q/ellipse (:x dot) (:y dot) (:diameter dot) (:diameter dot)))))
-  (q/pop-matrix)
-  )
+  (q/image (:logo state) (- (/ (q/width) 2) 100) (- (/ (q/height) 2) 100))
+  (draw-dots 300 300 1 (:ldots state) q/rect)
+  (draw-dots (/ (q/width) 2) (/ (q/height) 2) -1 (:rdots state) q/ellipse))
 
 (defn update-position [m]
-  (let [x (update-in m [:x] + (:xspeed m))]
-    (update-in x [:y] + (:yspeed m))))
+  (-> m
+      (update-in [:x] + (:xspeed m))
+      (update-in [:y] + (:yspeed m))))
 
 (defn add-dot [m]
-  (if (< 50 (rand-int 100))
+  (if (< 50 (q/random 100))
     (conj m (new_dot)) ; Add a new dot
     m)) ; Do nothing and return the original list
 
