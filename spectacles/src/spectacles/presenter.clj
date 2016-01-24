@@ -5,14 +5,14 @@
 
 (q/defsketch spectacles
   :title "Presentation Cycle"
-  :size [1280 720]
+  :size :fullscreen
 
   :setup spectacles.scheduler/setup
   :update spectacles.scheduler/update
   :draw spectacles.scheduler/draw
 
   :middleware [m/fun-mode]
-;  :features [:keep-on-top :present]
+  :features [:keep-on-top :present]
   :bgcolor "#000000")
 
 (defn -main
