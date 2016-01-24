@@ -1,14 +1,14 @@
 (ns spectacles.scheduler
   (:require [spectacles.present-logo]
-            [spectacles.practice]))
+            [spectacles.starfield]))
 
 (def sketches [{:setup  spectacles.present-logo/setup
                 :update spectacles.present-logo/update
                 :draw   spectacles.present-logo/draw}
 
-               {:setup  spectacles.practice/setup
-                :update spectacles.practice/update
-                :draw   spectacles.practice/draw}])
+               {:setup  spectacles.starfield/setup
+                :update spectacles.starfield/update-state
+                :draw   spectacles.starfield/draw-state}])
 
 (def active-sketch (atom {:sketch (first sketches)
                           :expiration :never}))

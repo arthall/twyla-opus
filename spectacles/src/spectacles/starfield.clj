@@ -95,14 +95,14 @@
   (let [lines (:lines state)]
     (assoc state :lines (update-lines lines))))
 
-(q/defsketch spectacles
-  :title "Star Field"
-  :size [960 480]
-  ;; Calling q/no-smooth results in a runtime error
-  :settings (partial q/smooth over_sampling)
-  :setup setup
-  :draw draw-state
-  :update update-state
-  :features [:keep-on-top]
-  :middleware [m/fun-mode m/navigation-2d])
+;; (q/defsketch spectacles
+;;   :title "Star Field"
+;;   :size [960 480]
+;;   ;; Calling q/no-smooth results in a runtime error
+;;   :settings (partial q/smooth over_sampling)
+;;   :setup setup
+;;   :draw draw-state
+;;   :update update-state
+;;   :features [:keep-on-top]
+;;   :middleware [m/fun-mode m/navigation-2d])
 
