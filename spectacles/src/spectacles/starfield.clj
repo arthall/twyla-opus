@@ -11,23 +11,24 @@
 (def max_length 150) ; Maximum starting length of a line
 (def min_length 1) ; Minimum starting length of a line
 (def max_speed 15) ; Maximum speed for a line
-(def min_blue 100)
+(def min_blue 200)
 (def max_blue 256)
-(def min_red 200)
-(def max_red 256)
-(def min_green 200)
-(def max_green 256)
+(def min_red 0)
+(def max_red 50)
+(def min_green 0)
+(def max_green 100)
 (def min_alpha 100)
 (def max_alpha 200)
 (def starting_x_value 10) ; Distance from the origin for the line
-
-(def stroke_weight 5)
-(def background_color 0) ; Background color for the sketch
+(def stroke_weight 5) ; Thickness of each line
+;; Background color for the sketch.  Add alpha to have the lines fade out
+;; vs disappearing.
+(def background_color [0 0 20 10])
 (def frame_rate 60)
 (def over_sampling 2) ; This affects the smoothing.  0 will remove smoothing.
-(def reduction 4) ; Change this to modify the scaling.
+(def reduction 2) ; Change this to modify the scaling.
 (def chance_of_new_line 0.75)
-
+(def wiggle 5) ; Maximum distance the origin can move
 (def degrees_in_circle 360)
 
 (defn random-int [start stop]
@@ -47,6 +48,7 @@
 
 (defn setup []
   (q/frame-rate frame_rate)
+  (apply q/background background_color)
   {:lines (list (new_line))})
 
 (defn draw-lines [lines]
@@ -62,13 +64,18 @@
         (q/pop-matrix)))))
 
 (defn draw-state [state]
-  (q/background background_color)
+  ;;(apply q/background background_color)
+  (apply q/fill background_color)
+  (q/no-stroke)
+  (q/rect 0 0 (* (q/width) reduction) (* (q/height) reduction))
   (q/stroke-weight stroke_weight)
   (q/push-matrix)
-  (let [new_x (/ (q/width) 2)
-        new_y (/ (q/height) 2)
-        scale (/ 1 reduction)]
-    (q/translate new_x new_y)
+  (let [new_x (- (/ (q/width) 2) wiggle)
+        new_y (- (/ (q/height) 2) wiggle)
+        scale (/ 1 reduction)
+        wiggle_x (q/random wiggle)
+        wiggle_y (q/random wiggle)]
+    (q/translate (+ new_x wiggle_x) (+ new_y wiggle_y))
     (q/scale scale scale))
   (draw-lines (:lines state))
   (q/pop-matrix))
