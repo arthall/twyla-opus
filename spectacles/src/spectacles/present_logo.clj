@@ -22,7 +22,7 @@
   (q/image (:logo state) (- (/ (q/width) 2) 100) (- (/ (q/height) 2) 100))
   (q/stroke 255)
   (q/fill 255)
-  (q/text-font (q/create-font "monofur" 56))
+  (q/text-font (q/create-font "Roboto Thin" 56))
   (q/text (:message state)
           (- (/ (q/width) 2) (/ (q/text-width (:message state)) 2))
           (+ (/ (q/height) 2) 200))
