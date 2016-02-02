@@ -5,7 +5,7 @@
 (defn setup []
   (q/smooth)
   (q/frame-rate 4)
-  {})
+  {:scale 1})
 
 (defn draw [state]
   ;; (q/background 255)
